@@ -25,7 +25,7 @@
       display: flex; align-items: center; justify-content: space-between;
       padding: 0 2rem; height: 60px;
       border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; background: var(--bg); z-index: 100;
+      position: sticky; top: 0; background: var(--bg); z-index: 200;
     }
     .nav-logo { font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
     .nav-tabs { display: flex; gap: .25rem; }
@@ -42,8 +42,12 @@
     .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; }
     .section-title span { color: var(--accent); }
 
-    /* SEARCH */
-    .search-row { display: flex; gap: .75rem; margin-bottom: 2rem; }
+    /* TICKER TAPE */
+    .tv-strip { border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+
+    /* SEARCH WITH AUTOCOMPLETE */
+    .search-wrapper { position: relative; margin-bottom: 2rem; }
+    .search-row { display: flex; gap: .75rem; }
     .search-input {
       flex: 1; background: var(--surface); border: 1px solid var(--border);
       border-radius: 8px; padding: .7rem 1rem; color: var(--text);
@@ -54,44 +58,73 @@
     .btn {
       background: var(--accent); color: #fff; border: none; border-radius: 8px;
       padding: .7rem 1.4rem; font-size: .9rem; font-weight: 600; cursor: pointer; transition: opacity .15s;
+      white-space: nowrap;
     }
     .btn:hover { opacity: .85; }
     .btn:disabled { opacity: .4; cursor: not-allowed; }
 
+    /* DROPDOWN */
+    .autocomplete-list {
+      position: absolute; top: calc(100% + 4px); left: 0;
+      width: calc(100% - 120px);
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; z-index: 300; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+      display: none;
+    }
+    .autocomplete-list.open { display: block; }
+    .ac-item {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .65rem 1rem; cursor: pointer; transition: background .1s;
+    }
+    .ac-item:hover, .ac-item.focused { background: var(--surface2); }
+    .ac-ticker {
+      font-family: 'JetBrains Mono', monospace; font-size: .82rem;
+      color: var(--accent); font-weight: 600; min-width: 80px;
+    }
+    .ac-name { font-size: .85rem; color: var(--text); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ac-type { font-size: .72rem; color: var(--muted); background: var(--surface2); padding: .15rem .45rem; border-radius: 4px; }
+    .ac-loading { padding: .75rem 1rem; font-size: .85rem; color: var(--muted); }
+
     /* WATCHLIST CARDS */
-    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
     .card {
       background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
       padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color .15s, transform .1s; position: relative;
     }
     .card:hover { border-color: var(--accent); transform: translateY(-1px); }
-    .card.active-card { border-color: var(--accent); }
-    .card-ticker { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent); font-weight: 500; margin-bottom: .2rem; }
-    .card-name { font-size: .82rem; color: var(--muted); margin-bottom: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-price { font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-bottom: .3rem; }
+    .card.active-card { border-color: var(--accent); background: #1f1410; }
+    .card-ticker { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent); font-weight: 500; margin-bottom: .15rem; }
+    .card-name { font-size: .82rem; color: var(--muted); margin-bottom: .6rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-price { font-size: 1.25rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-bottom: .25rem; }
     .card-change { font-size: .82rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
     .up { color: var(--up); } .down { color: var(--down); }
     .card-remove {
       position: absolute; top: .6rem; right: .7rem; background: none; border: none;
       color: var(--muted); font-size: 1rem; cursor: pointer; opacity: 0; transition: opacity .15s;
+      line-height: 1;
     }
     .card:hover .card-remove { opacity: 1; }
-    .skeleton {
-      background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
-      background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 4px; height: 1em;
-    }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* TRADINGVIEW CHART */
-    .tv-container {
+    /* CHART AREA */
+    .chart-area {
       background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
       overflow: hidden; margin-bottom: 2rem;
     }
-    .tv-header {
+    .chart-header {
       display: flex; align-items: center; justify-content: space-between;
       padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: .75rem;
     }
-    .tv-title { font-size: 1rem; font-weight: 600; }
+    .chart-meta { display: flex; flex-direction: column; gap: .2rem; }
+    .chart-name { font-size: .9rem; color: var(--muted); }
+    .chart-price-row { display: flex; align-items: baseline; gap: .75rem; }
+    .chart-price { font-size: 1.8rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+    .chart-change-badge {
+      font-size: .85rem; font-weight: 600; font-family: 'JetBrains Mono', monospace;
+      padding: .2rem .6rem; border-radius: 6px;
+    }
+    .chart-change-badge.up   { background: rgba(34,197,94,.15); color: var(--up); }
+    .chart-change-badge.down { background: rgba(239,68,68,.15);  color: var(--down); }
     .tv-periods { display: flex; gap: .4rem; }
     .period-btn {
       padding: .3rem .7rem; border-radius: 6px; font-size: .78rem; font-weight: 600;
@@ -99,15 +132,11 @@
     }
     .period-btn:hover { color: var(--text); border-color: var(--muted); }
     .period-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(249,115,22,.08); }
-    #tvWidget { width: 100%; height: 400px; }
-
-    /* MARKET OVERVIEW STRIP */
-    .tv-strip { border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
+    #tvWidget { width: 100%; height: 420px; }
 
     /* EMPTY STATE */
     .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
     .empty-state .icon { font-size: 2.5rem; margin-bottom: .75rem; }
-    .empty-state p { font-size: .9rem; }
 
     /* SIMULATOR */
     .sim-layout { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; }
@@ -122,36 +151,47 @@
       font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; transition: border .15s;
     }
     .form-input:focus, .form-select:focus { border-color: var(--accent); }
-    .form-select option { background: var(--surface2); }
     .sym-row { display: flex; gap: .5rem; }
     .sym-row .form-input { flex: 1; }
-    .sym-badge {
-      display: inline-block; background: rgba(249,115,22,.15); color: var(--accent);
-      border-radius: 6px; padding: .2rem .6rem; font-size: .78rem; font-family: 'JetBrains Mono', monospace;
-      margin-top: .4rem;
+    .sim-info-box {
+      background: var(--surface2); border-radius: 8px; padding: .75rem 1rem;
+      font-size: .82rem; color: var(--muted); margin-top: .5rem; line-height: 1.5;
+      display: none;
     }
-    .sim-info { font-size: .78rem; color: var(--muted); margin-top: .4rem; }
+    .sim-info-box.visible { display: block; }
+    .sim-info-box strong { color: var(--accent); }
 
     .scenarios { display: grid; grid-template-columns: repeat(3,1fr); gap: .75rem; margin-bottom: 1.25rem; }
     .scenario-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
-    .scenario-card.pess { border-color: var(--down); }
+    .scenario-card.pess { border-color: rgba(239,68,68,.4); }
     .scenario-card.neu  { border-top: 2px solid var(--accent); }
-    .scenario-card.opt  { border-color: var(--up); }
+    .scenario-card.opt  { border-color: rgba(34,197,94,.4); }
     .sc-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .4rem; }
     .scenario-card.pess .sc-label { color: var(--down); }
     .scenario-card.neu  .sc-label { color: var(--accent); }
     .scenario-card.opt  .sc-label { color: var(--up); }
-    .sc-value { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; margin-bottom: .25rem; }
+    .sc-value { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; margin-bottom: .2rem; }
     .sc-rate  { font-size: .72rem; color: var(--muted); }
-    .sc-gain  { font-size: .72rem; margin-top: .2rem; }
-
+    .sc-gain  { font-size: .72rem; margin-top: .25rem; font-family: 'JetBrains Mono', monospace; }
     #simChart { width: 100%; height: 260px; display: block; margin-top: .5rem; }
 
     .status-bar {
-      background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.2);
-      border-radius: 8px; padding: .6rem 1rem; font-size: .82rem; color: var(--accent);
+      border-radius: 8px; padding: .6rem 1rem; font-size: .82rem;
       margin-bottom: 1rem; display: none;
     }
+    .status-bar.loading { display:block; background:rgba(249,115,22,.08); border:1px solid rgba(249,115,22,.2); color:var(--accent); }
+    .status-bar.success { display:block; background:rgba(34,197,94,.08); border:1px solid rgba(34,197,94,.2); color:var(--up); }
+    .status-bar.error   { display:block; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:var(--down); }
+
+    /* sim search autocomplete */
+    .sim-search-wrap { position: relative; }
+    .sim-ac-list {
+      position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; z-index: 300; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5); display: none;
+    }
+    .sim-ac-list.open { display: block; }
   </style>
 </head>
 <body>
@@ -167,47 +207,39 @@
 <!-- ══════════ MARCHÉS ══════════ -->
 <div class="page active" id="page-markets">
 
-  <!-- bande aperçu marché -->
   <div class="tv-strip">
     <div class="tradingview-widget-container">
       <div class="tradingview-widget-container__widget"></div>
       <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
-      {
-        "symbols": [
-          {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
-          {"proName":"NASDAQ:QQQ","title":"Nasdaq QQQ"},
-          {"description":"CAC 40","proName":"EURONEXT:PX1"},
-          {"description":"BTC/EUR","proName":"COINBASE:BTCEUR"},
-          {"description":"ETH/EUR","proName":"COINBASE:ETHEUR"},
-          {"description":"Or","proName":"TVC:GOLD"},
-          {"description":"EUR/USD","proName":"FX:EURUSD"}
-        ],
-        "showSymbolLogo": true,
-        "isTransparent": true,
-        "displayMode": "adaptive",
-        "colorTheme": "dark",
-        "locale": "fr"
-      }
+      {"symbols":[{"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},{"proName":"NASDAQ:QQQ","title":"Nasdaq"},{"description":"CAC 40","proName":"EURONEXT:PX1"},{"description":"BTC/EUR","proName":"COINBASE:BTCEUR"},{"description":"ETH/EUR","proName":"COINBASE:ETHEUR"},{"description":"Or","proName":"TVC:GOLD"},{"description":"EUR/USD","proName":"FX:EURUSD"}],"showSymbolLogo":true,"isTransparent":true,"displayMode":"adaptive","colorTheme":"dark","locale":"fr"}
       </script>
     </div>
   </div>
 
-  <div class="search-row">
-    <input class="search-input" id="searchInput" placeholder="Ajouter un actif : AAPL, MC.PA, BTC-USD, IWDA.AS …" />
-    <button class="btn" id="addBtn" onclick="addAsset()">Ajouter</button>
+  <div class="search-wrapper">
+    <div class="search-row">
+      <input class="search-input" id="searchInput" placeholder="Rechercher : Apple, S&P 500, Bitcoin, LVMH…" autocomplete="off" />
+      <button class="btn" onclick="addSelected()">Ajouter</button>
+    </div>
+    <div class="autocomplete-list" id="acList"></div>
   </div>
 
   <p class="section-title">Ma <span>watchlist</span></p>
   <div class="cards-grid" id="watchlistGrid"></div>
   <div class="empty-state" id="emptyState" style="display:none">
     <div class="icon">📈</div>
-    <p>Ajoute un actif pour commencer à suivre les marchés.</p>
+    <p>Ajoute un actif pour commencer.</p>
   </div>
 
-  <!-- Graphique TradingView -->
-  <div class="tv-container" id="chartArea" style="display:none">
-    <div class="tv-header">
-      <div class="tv-title" id="chartTitle">—</div>
+  <div class="chart-area" id="chartArea" style="display:none">
+    <div class="chart-header">
+      <div class="chart-meta">
+        <div class="chart-name" id="chartName">—</div>
+        <div class="chart-price-row">
+          <div class="chart-price" id="chartPrice">—</div>
+          <span class="chart-change-badge" id="chartChangeBadge">—</span>
+        </div>
+      </div>
       <div class="tv-periods">
         <button class="period-btn active" onclick="setTVPeriod('1D',this)">1J</button>
         <button class="period-btn" onclick="setTVPeriod('1W',this)">1S</button>
@@ -219,30 +251,26 @@
     </div>
     <div id="tvWidget"></div>
   </div>
-
 </div>
 
 <!-- ══════════ SIMULATEUR ══════════ -->
 <div class="page" id="page-simulator">
   <p class="section-title">Simulation de <span>portefeuille</span></p>
-
-  <div class="status-bar" id="statusBar">⏳ Chargement des données historiques…</div>
-
+  <div class="status-bar" id="statusBar"></div>
   <div class="sim-layout">
-    <!-- Paramètres -->
     <div class="sim-panel">
       <h3>Paramètres</h3>
-
       <div class="form-group">
-        <label class="form-label">Symbole de l'actif</label>
-        <div class="sym-row">
-          <input class="form-input" id="simSymbol" placeholder="ex: AAPL, IWDA.AS, BTC-USD" />
-          <button class="btn" id="fetchBtn" onclick="fetchAndSim()" style="white-space:nowrap">Charger</button>
+        <label class="form-label">Actif à simuler</label>
+        <div class="sim-search-wrap">
+          <div class="sym-row">
+            <input class="form-input" id="simSymbol" placeholder="ex: AAPL, IWDA.AS, BTC-USD" autocomplete="off" />
+            <button class="btn" id="fetchBtn" onclick="fetchHistory()">Charger</button>
+          </div>
+          <div class="sim-ac-list" id="simAcList"></div>
         </div>
-        <div id="symBadge"></div>
-        <div class="sim-info">Le rendement annuel moyen sera calculé depuis l'historique réel.</div>
+        <div class="sim-info-box" id="simInfoBox"></div>
       </div>
-
       <div class="form-group">
         <label class="form-label">Montant initial (€)</label>
         <input class="form-input" id="simAmount" type="number" value="1000" min="1" />
@@ -255,14 +283,11 @@
         <label class="form-label">Durée (années)</label>
         <input class="form-input" id="simYears" type="number" value="10" min="1" max="50" />
       </div>
-
       <button class="btn" style="width:100%;margin-top:.5rem" onclick="runSim()">Simuler</button>
     </div>
 
-    <!-- Résultats -->
     <div class="sim-panel">
       <h3>Résultats</h3>
-
       <div class="scenarios">
         <div class="scenario-card pess">
           <div class="sc-label">Pessimiste</div>
@@ -283,22 +308,28 @@
           <div class="sc-gain up" id="gainOpt"></div>
         </div>
       </div>
-
       <canvas id="simChart"></canvas>
     </div>
   </div>
 </div>
 
-<!-- scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 const AV_KEY = 'X8FTCGJYAM60D1FC';
-let watchlist = JSON.parse(localStorage.getItem('ssm_watchlist') || '["AAPL","IWDA.AS","BTC-USD","MC.PA"]');
+let watchlist = JSON.parse(localStorage.getItem('ssm_wl2') || '["AAPL","IWDA.AS","BTC-USD","MC.PA"]');
 let currentSymbol = null;
 let currentPeriod = '1D';
-let tvWidgetInstance = null;
 let simChartInstance = null;
-let cachedRate = null; // moyenne historique récupérée via AV
+let cachedRate = null;
+let selectedAC = null; // {symbol, description, type, exchange}
+let simSelectedSym = null;
+
+/* ── helpers ── */
+function fmt(n) {
+  if (n >= 1000) return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:4});
+}
+function saveWL() { localStorage.setItem('ssm_wl2', JSON.stringify(watchlist)); }
 
 /* ── navigation ── */
 function showPage(id, btn) {
@@ -308,25 +339,106 @@ function showPage(id, btn) {
   btn.classList.add('active');
 }
 
-/* ── watchlist ── */
-function saveWatchlist() { localStorage.setItem('ssm_watchlist', JSON.stringify(watchlist)); }
+/* ══ AUTOCOMPLETE (TradingView symbol search) ══ */
+async function searchSymbols(query) {
+  if (!query || query.length < 1) return [];
+  const url = `https://symbol-search.tradingview.com/symbol_search/v3/?text=${encodeURIComponent(query)}&hl=1&exchange=&lang=fr&search_type=undefined&domain=production&sort_by_country=FR`;
+  try {
+    const r = await fetch(url);
+    const d = await r.json();
+    return (d.symbols || []).slice(0, 8);
+  } catch { return []; }
+}
 
-function addAsset() {
-  const input = document.getElementById('searchInput');
-  const sym = input.value.trim().toUpperCase();
-  if (!sym) return;
-  if (watchlist.includes(sym)) { input.value = ''; return; }
-  watchlist.push(sym);
-  saveWatchlist();
-  input.value = '';
+function typeLabel(t) {
+  const map = { stock:'Action', fund:'ETF', crypto:'Crypto', forex:'Forex', index:'Indice', futures:'Futures', bond:'Obligation' };
+  return map[t] || t;
+}
+
+function buildACItem(sym, onClick) {
+  const item = document.createElement('div');
+  item.className = 'ac-item';
+  const ticker = sym.symbol || sym.ticker || '';
+  const name   = sym.description || sym.full_name || '';
+  const type   = typeLabel(sym.type || '');
+  const exch   = sym.exchange || '';
+  item.innerHTML = `
+    <span class="ac-ticker">${ticker}</span>
+    <span class="ac-name">${name}</span>
+    <span class="ac-type">${type}${exch ? ' · ' + exch : ''}</span>`;
+  item.onclick = () => onClick(sym);
+  return item;
+}
+
+/* watchlist search */
+let acDebounce = null;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(acDebounce);
+  const q = this.value.trim();
+  const list = document.getElementById('acList');
+  if (!q) { list.classList.remove('open'); list.innerHTML = ''; selectedAC = null; return; }
+  list.innerHTML = '<div class="ac-loading">Recherche…</div>';
+  list.classList.add('open');
+  acDebounce = setTimeout(async () => {
+    const results = await searchSymbols(q);
+    list.innerHTML = '';
+    if (!results.length) { list.innerHTML = '<div class="ac-loading">Aucun résultat</div>'; return; }
+    results.forEach(sym => {
+      list.appendChild(buildACItem(sym, (s) => {
+        selectedAC = s;
+        document.getElementById('searchInput').value = s.symbol + ' — ' + (s.description || '');
+        list.classList.remove('open');
+        list.innerHTML = '';
+      }));
+    });
+  }, 280);
+});
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addSelected();
+  if (e.key === 'Escape') { document.getElementById('acList').classList.remove('open'); }
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrapper')) document.getElementById('acList').classList.remove('open');
+});
+
+function addSelected() {
+  let sym, name;
+  if (selectedAC) {
+    sym  = selectedAC.symbol;
+    name = selectedAC.description || selectedAC.symbol;
+  } else {
+    const raw = document.getElementById('searchInput').value.trim().toUpperCase().split('—')[0].trim();
+    if (!raw) return;
+    sym = raw; name = raw;
+  }
+  if (!sym || watchlist.find(w => w.sym === sym)) {
+    document.getElementById('searchInput').value = '';
+    selectedAC = null; return;
+  }
+  watchlist.push({ sym, name });
+  saveWL();
+  document.getElementById('searchInput').value = '';
+  selectedAC = null;
   renderWatchlist();
 }
 
-document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') addAsset(); });
+/* ══ WATCHLIST ══ */
+function toTV(sym) {
+  if (!sym) return sym;
+  if (sym.includes(':')) return sym; // already has exchange
+  if (sym.endsWith('-USD')) return 'COINBASE:' + sym.replace('-USD','') + 'USD';
+  if (sym.endsWith('-EUR')) return 'COINBASE:' + sym.replace('-EUR','') + 'EUR';
+  if (sym.endsWith('.PA')) return 'EURONEXT:' + sym.replace('.PA','');
+  if (sym.endsWith('.AS')) return 'EURONEXT:' + sym.replace('.AS','');
+  if (sym.endsWith('.L'))  return 'LSE:' + sym.replace('.L','');
+  if (sym.endsWith('.MI')) return 'MIL:' + sym.replace('.MI','');
+  if (sym.endsWith('.DE')) return 'XETR:' + sym.replace('.DE','');
+  return 'NASDAQ:' + sym;
+}
 
 function removeAsset(sym) {
-  watchlist = watchlist.filter(s => s !== sym);
-  saveWatchlist();
+  watchlist = watchlist.filter(w => w.sym !== sym);
+  saveWL();
   if (currentSymbol === sym) {
     document.getElementById('chartArea').style.display = 'none';
     currentSymbol = null;
@@ -334,108 +446,93 @@ function removeAsset(sym) {
   renderWatchlist();
 }
 
-/* convert Yahoo-style symbol to TradingView symbol */
-function toTV(sym) {
-  // crypto
-  if (sym.endsWith('-USD')) return 'COINBASE:' + sym.replace('-','');
-  if (sym.endsWith('-EUR')) return 'COINBASE:' + sym.replace('-','');
-  // Paris
-  if (sym.endsWith('.PA')) return 'EURONEXT:' + sym.replace('.PA','');
-  // Amsterdam
-  if (sym.endsWith('.AS')) return 'EURONEXT:' + sym.replace('.AS','');
-  // London
-  if (sym.endsWith('.L'))  return 'LSE:' + sym.replace('.L','');
-  // default NASDAQ/NYSE
-  return sym;
-}
-
-/* fetch quote from Alpha Vantage */
-async function fetchQuote(sym) {
-  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${AV_KEY}`;
-  const r = await fetch(url);
-  const d = await r.json();
-  const q = d['Global Quote'];
-  if (!q || !q['05. price']) return null;
-  return {
-    price:  parseFloat(q['05. price']),
-    change: parseFloat(q['10. change percent'].replace('%','')),
-    symbol: sym
-  };
-}
-
-function fmt(n) {
-  if (n >= 1000) return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2});
-  return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:4});
-}
-
+// use TradingView mini widget for each card to get live price
 function renderWatchlist() {
-  const grid = document.getElementById('watchlistGrid');
+  const grid  = document.getElementById('watchlistGrid');
   const empty = document.getElementById('emptyState');
   grid.innerHTML = '';
-  if (watchlist.length === 0) { empty.style.display = 'block'; return; }
+  if (!watchlist.length) { empty.style.display = 'block'; return; }
   empty.style.display = 'none';
 
-  watchlist.forEach(sym => {
+  watchlist.forEach(item => {
+    const sym  = typeof item === 'string' ? item : item.sym;
+    const name = typeof item === 'string' ? item : (item.name || item.sym);
+    const tvSym = toTV(sym);
+
     const card = document.createElement('div');
     card.className = 'card' + (sym === currentSymbol ? ' active-card' : '');
     card.id = 'card-' + sym;
+
+    // mini TradingView widget for live quote
+    const wid = 'tv_' + sym.replace(/[^a-zA-Z0-9]/g,'_') + '_' + Date.now();
     card.innerHTML = `
       <button class="card-remove" onclick="event.stopPropagation();removeAsset('${sym}')">✕</button>
       <div class="card-ticker">${sym}</div>
-      <div class="card-name skeleton" style="width:70%;height:.8em;margin-bottom:.75rem">&nbsp;</div>
-      <div class="card-price" style="color:var(--muted)">…</div>
-      <div class="card-change">—</div>`;
-    card.onclick = () => loadChart(sym);
+      <div class="card-name">${name}</div>
+      <div id="${wid}" style="height:60px"></div>`;
+    card.onclick = () => loadChart(sym, name);
     grid.appendChild(card);
 
-    fetchQuote(sym).then(q => {
-      if (!q) {
-        card.querySelector('.card-name').className = 'card-name';
-        card.querySelector('.card-name').textContent = 'Données indisponibles';
-        card.querySelector('.card-price').textContent = '—';
-        return;
-      }
-      const dir = q.change >= 0 ? 'up' : 'down';
-      card.querySelector('.card-name').className = 'card-name';
-      card.querySelector('.card-name').textContent = sym;
-      card.querySelector('.card-price').textContent = fmt(q.price);
-      card.querySelector('.card-change').className = `card-change ${dir}`;
-      card.querySelector('.card-change').textContent = `${q.change >= 0 ? '+' : ''}${q.change.toFixed(2)}%`;
-    }).catch(() => {
-      card.querySelector('.card-name').className = 'card-name';
-      card.querySelector('.card-name').textContent = 'Erreur';
+    // inject mini symbol-overview widget
+    const container = document.createElement('div');
+    container.className = 'tradingview-widget-container';
+    const inner = document.createElement('div');
+    inner.className = 'tradingview-widget-container__widget';
+    container.appendChild(inner);
+    document.getElementById(wid).appendChild(container);
+
+    const sc = document.createElement('script');
+    sc.src = 'https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js';
+    sc.async = true;
+    sc.innerHTML = JSON.stringify({
+      symbol: tvSym,
+      width: '100%',
+      colorTheme: 'dark',
+      isTransparent: true,
+      locale: 'fr'
     });
+    container.appendChild(sc);
   });
 }
 
-/* ── TradingView chart ── */
-function loadChart(sym) {
+/* ══ CHART ══ */
+function loadChart(sym, name) {
   currentSymbol = sym;
   document.querySelectorAll('.card').forEach(c => c.classList.remove('active-card'));
   const card = document.getElementById('card-' + sym);
   if (card) card.classList.add('active-card');
 
-  const tvSym = toTV(sym);
-  document.getElementById('chartTitle').textContent = sym;
+  document.getElementById('chartName').textContent = name || sym;
+  document.getElementById('chartPrice').textContent = '…';
+  document.getElementById('chartChangeBadge').textContent = '';
+  document.getElementById('chartChangeBadge').className = 'chart-change-badge';
   document.getElementById('chartArea').style.display = 'block';
 
-  document.getElementById('tvWidget').innerHTML = '';
-  const container = document.createElement('div');
-  container.className = 'tradingview-widget-container';
-  container.style.height = '400px';
-  const widgetDiv = document.createElement('div');
-  widgetDiv.id = 'tv_chart_' + Date.now();
-  widgetDiv.style.height = '400px';
-  container.appendChild(widgetDiv);
-  document.getElementById('tvWidget').appendChild(container);
+  renderTVChart(sym);
+  document.getElementById('chartArea').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
 
-  const script = document.createElement('script');
-  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-  script.async = true;
-  script.innerHTML = JSON.stringify({
+function renderTVChart(sym) {
+  const tvSym = toTV(sym);
+  const container = document.getElementById('tvWidget');
+  container.innerHTML = '';
+
+  const wrap = document.createElement('div');
+  wrap.className = 'tradingview-widget-container';
+  wrap.style.height = '420px';
+  const inner = document.createElement('div');
+  const wid = 'tvchart_' + Date.now();
+  inner.id = wid;
+  inner.style.height = '420px';
+  wrap.appendChild(inner);
+  container.appendChild(wrap);
+
+  const sc = document.createElement('script');
+  sc.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  sc.async = true;
+  sc.innerHTML = JSON.stringify({
     autosize: true,
     symbol: tvSym,
-    interval: currentPeriod === '1D' ? 'D' : currentPeriod === '1W' ? 'W' : 'M',
     range: currentPeriod,
     timezone: 'Europe/Paris',
     theme: 'dark',
@@ -444,125 +541,125 @@ function loadChart(sym) {
     backgroundColor: '#1a1a1a',
     gridColor: 'rgba(255,255,255,0.03)',
     hide_top_toolbar: false,
-    hide_legend: false,
     save_image: false,
-    container_id: widgetDiv.id
+    container_id: wid
   });
-  container.appendChild(script);
-  document.getElementById('chartArea').scrollIntoView({behavior:'smooth', block:'nearest'});
+  wrap.appendChild(sc);
 }
 
 function setTVPeriod(p, btn) {
   currentPeriod = p;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (currentSymbol) loadChart(currentSymbol);
+  if (currentSymbol) renderTVChart(currentSymbol);
 }
 
-/* ══════════ SIMULATEUR ══════════ */
+/* ══ SIMULATOR ══ */
 
-async function fetchAndSim() {
-  const sym = document.getElementById('simSymbol').value.trim().toUpperCase();
+// sim autocomplete
+let simDebounce = null;
+document.getElementById('simSymbol').addEventListener('input', function() {
+  clearTimeout(simDebounce);
+  const q = this.value.trim();
+  const list = document.getElementById('simAcList');
+  if (!q) { list.classList.remove('open'); return; }
+  list.innerHTML = '<div class="ac-loading">Recherche…</div>';
+  list.classList.add('open');
+  simDebounce = setTimeout(async () => {
+    const results = await searchSymbols(q);
+    list.innerHTML = '';
+    if (!results.length) { list.innerHTML = '<div class="ac-loading">Aucun résultat</div>'; return; }
+    results.forEach(sym => {
+      list.appendChild(buildACItem(sym, (s) => {
+        simSelectedSym = s.symbol;
+        document.getElementById('simSymbol').value = s.symbol + ' — ' + (s.description || '');
+        list.classList.remove('open');
+      }));
+    });
+  }, 280);
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.sim-search-wrap')) document.getElementById('simAcList').classList.remove('open');
+});
+
+async function fetchHistory() {
+  const raw = document.getElementById('simSymbol').value.trim().split('—')[0].trim().toUpperCase();
+  const sym = simSelectedSym || raw;
   if (!sym) return;
 
-  const statusBar = document.getElementById('statusBar');
-  const fetchBtn  = document.getElementById('fetchBtn');
-  statusBar.style.display = 'block';
-  statusBar.textContent   = '⏳ Récupération de l\'historique réel de ' + sym + '…';
-  fetchBtn.disabled = true;
+  const sb = document.getElementById('statusBar');
+  const fb = document.getElementById('fetchBtn');
+  sb.className = 'status-bar loading';
+  sb.textContent = '⏳ Récupération de l\'historique de ' + sym + '…';
+  fb.disabled = true;
 
   try {
-    // Try monthly time series (20 years of data)
     const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${sym}&apikey=${AV_KEY}`;
     const r = await fetch(url);
     const d = await r.json();
 
     if (d['Note'] || d['Information']) {
-      statusBar.textContent = '⚠️ Limite API atteinte (25 req/jour). Réessaie demain ou utilise les taux manuels.';
-      cachedRate = null;
-      document.getElementById('symBadge').innerHTML = '';
-      fetchBtn.disabled = false;
-      return;
+      sb.className = 'status-bar error';
+      sb.textContent = '⚠️ Limite API atteinte (25 req/jour). Réessaie demain.';
+      fb.disabled = false; return;
     }
-
     const series = d['Monthly Adjusted Time Series'];
     if (!series) {
-      statusBar.textContent = '❌ Symbole introuvable. Vérifie le ticker (ex: AAPL, MC.PA, BTC-USD).';
-      cachedRate = null;
-      document.getElementById('symBadge').innerHTML = '';
-      fetchBtn.disabled = false;
-      return;
+      sb.className = 'status-bar error';
+      sb.textContent = '❌ Symbole introuvable. Essaie le format Yahoo Finance (ex: MC.PA, BTC-USD).';
+      fb.disabled = false; return;
     }
 
-    // calc CAGR from oldest to newest
     const dates = Object.keys(series).sort();
     const first = parseFloat(series[dates[0]]['5. adjusted close']);
     const last  = parseFloat(series[dates[dates.length-1]]['5. adjusted close']);
-    const years = dates.length / 12;
-    const cagr  = (Math.pow(last / first, 1 / years) - 1) * 100;
+    const yrs   = dates.length / 12;
+    cachedRate  = parseFloat(((Math.pow(last / first, 1 / yrs) - 1) * 100).toFixed(2));
 
-    cachedRate = parseFloat(cagr.toFixed(2));
+    const infoBox = document.getElementById('simInfoBox');
+    infoBox.className = 'sim-info-box visible';
+    infoBox.innerHTML = `<strong>${sym}</strong> · Rendement annuel moyen réel : <strong>${cachedRate > 0 ? '+' : ''}${cachedRate}%/an</strong> sur <strong>${Math.round(yrs)} ans</strong> d'historique`;
 
-    document.getElementById('symBadge').innerHTML =
-      `<span class="sym-badge">${sym}</span> <span style="font-size:.78rem;color:var(--muted)">TCAC réel : ${cachedRate > 0 ? '+' : ''}${cachedRate.toFixed(2)}%/an sur ${Math.round(years)} ans</span>`;
-
-    statusBar.textContent = `✅ Données chargées — ${sym} : rendement annuel moyen de ${cachedRate.toFixed(2)}%`;
-    statusBar.style.background = 'rgba(34,197,94,.08)';
-    statusBar.style.borderColor = 'rgba(34,197,94,.25)';
-    statusBar.style.color = 'var(--up)';
-
+    sb.className = 'status-bar success';
+    sb.textContent = `✅ Données chargées pour ${sym}`;
     runSim();
   } catch(e) {
-    statusBar.textContent = '❌ Erreur réseau. Vérifie ta connexion.';
+    sb.className = 'status-bar error';
+    sb.textContent = '❌ Erreur réseau.';
   }
-  fetchBtn.disabled = false;
+  fb.disabled = false;
 }
 
 function compound(initial, monthly, years, rate) {
   const r = rate / 100 / 12;
   const n = years * 12;
-  let val = initial * Math.pow(1 + r, n);
-  if (r === 0) {
-    val = initial + monthly * n;
-  } else {
-    val += monthly * (Math.pow(1 + r, n) - 1) / r;
-  }
-  return val;
+  if (r === 0) return initial + monthly * n;
+  return initial * Math.pow(1+r,n) + monthly * (Math.pow(1+r,n)-1) / r;
 }
 
 function runSim() {
   const amount  = parseFloat(document.getElementById('simAmount').value)  || 1000;
   const monthly = parseFloat(document.getElementById('simMonthly').value) || 0;
   const years   = parseInt(document.getElementById('simYears').value)     || 10;
+  const base    = cachedRate !== null ? cachedRate : 7;
 
-  let base = cachedRate !== null ? cachedRate : 7; // fallback 7%
-  const rates = {
-    pess: parseFloat((base * 0.4).toFixed(2)),
-    neu:  parseFloat((base).toFixed(2)),
-    opt:  parseFloat((base * 1.6).toFixed(2))
-  };
-
+  const rates = { pess: +(base*0.4).toFixed(2), neu: +base.toFixed(2), opt: +(base*1.6).toFixed(2) };
   const invested = amount + monthly * years * 12;
-  const vPess = compound(amount, monthly, years, rates.pess);
-  const vNeu  = compound(amount, monthly, years, rates.neu);
-  const vOpt  = compound(amount, monthly, years, rates.opt);
 
-  function setCard(prefix, val, rate) {
-    document.getElementById('res' + prefix).textContent = fmt(val) + ' €';
-    document.getElementById('rate' + prefix + 'Lbl').textContent = rate + '%/an';
+  function setCard(id, rate) {
+    const val  = compound(amount, monthly, years, rate);
     const gain = val - invested;
-    document.getElementById('gain' + prefix).textContent = (gain >= 0 ? '+' : '') + fmt(gain) + ' €';
+    document.getElementById('res'  + id).textContent  = fmt(val) + ' €';
+    document.getElementById('rate' + id + 'Lbl').textContent = (rate>=0?'+':'') + rate + '%/an';
+    document.getElementById('gain' + id).textContent  = (gain>=0?'+':'') + fmt(gain) + ' €';
   }
-  setCard('Pess', vPess, rates.pess);
-  setCard('Neu',  vNeu,  rates.neu);
-  setCard('Opt',  vOpt,  rates.opt);
+  setCard('Pess', rates.pess);
+  setCard('Neu',  rates.neu);
+  setCard('Opt',  rates.opt);
 
-  // chart
-  const labels = Array.from({length: years + 1}, (_, i) => 'An ' + i);
-  const dPess  = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.pess)));
-  const dNeu   = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.neu)));
-  const dOpt   = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.opt)));
-  const dInv   = Array.from({length: years + 1}, (_, i) => Math.round(amount + monthly * i * 12));
+  const labels = Array.from({length:years+1}, (_,i) => 'An '+i);
+  const mk = r => Array.from({length:years+1}, (_,i) => Math.round(compound(amount,monthly,i,r)));
+  const dInv = Array.from({length:years+1}, (_,i) => Math.round(amount + monthly*i*12));
 
   const ctx = document.getElementById('simChart').getContext('2d');
   if (simChartInstance) simChartInstance.destroy();
@@ -571,27 +668,30 @@ function runSim() {
     data: {
       labels,
       datasets: [
-        { label:'Optimiste',  data:dOpt,  borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.3, fill:false },
-        { label:'Neutre',     data:dNeu,  borderColor:'#f97316', borderWidth:2, pointRadius:0, tension:.3, fill:false },
-        { label:'Pessimiste', data:dPess, borderColor:'#ef4444', borderWidth:2, pointRadius:0, tension:.3, fill:false },
-        { label:'Investi',    data:dInv,  borderColor:'#555',    borderWidth:1, pointRadius:0, tension:.0, fill:false, borderDash:[4,4] },
+        {label:'Optimiste', data:mk(rates.opt), borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.3, fill:false},
+        {label:'Neutre',    data:mk(rates.neu), borderColor:'#f97316', borderWidth:2, pointRadius:0, tension:.3, fill:false},
+        {label:'Pessimiste',data:mk(rates.pess),borderColor:'#ef4444', borderWidth:2, pointRadius:0, tension:.3, fill:false},
+        {label:'Investi',   data:dInv,           borderColor:'#444',   borderWidth:1, pointRadius:0, tension:.0, fill:false, borderDash:[4,4]},
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color:'#888', font:{size:11}, boxWidth:12 } },
-        tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ' : ' + fmt(c.parsed.y) + ' €' } }
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#888',font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:c=>' '+c.dataset.label+' : '+fmt(c.parsed.y)+' €'}}
       },
-      scales: {
-        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#888', font:{size:10}} },
-        y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#888', font:{size:10}, callback: v => v >= 1000 ? (v/1000).toFixed(0)+'k€' : v+'€' } }
+      scales:{
+        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#888',font:{size:10}}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#888',font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'k€':v+'€'}}
       }
     }
   });
 }
 
 /* ── init ── */
+// migrate old string watchlist format
+watchlist = watchlist.map(w => typeof w === 'string' ? {sym:w, name:w} : w);
+saveWL();
 renderWatchlist();
 runSim();
 </script>
