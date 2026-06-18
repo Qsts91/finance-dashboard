@@ -7,328 +7,151 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:        #0f0f0f;
-      --surface:   #1a1a1a;
-      --surface2:  #222222;
-      --border:    #2a2a2a;
-      --accent:    #f97316;
-      --accent-dim:#7c3a0e;
-      --text:      #f0f0f0;
-      --muted:     #888888;
-      --up:        #22c55e;
-      --down:      #ef4444;
+      --bg:       #0f0f0f;
+      --surface:  #1a1a1a;
+      --surface2: #222222;
+      --border:   #2a2a2a;
+      --accent:   #f97316;
+      --text:     #f0f0f0;
+      --muted:    #888888;
+      --up:       #22c55e;
+      --down:     #ef4444;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-    }
-
-    /* ── NAV ── */
+    /* NAV */
     nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 2rem;
-      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
       border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 100;
+      position: sticky; top: 0; background: var(--bg); z-index: 100;
     }
-    .nav-logo {
-      font-size: .85rem;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .nav-tabs {
-      display: flex;
-      gap: .25rem;
-    }
+    .nav-logo { font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+    .nav-tabs { display: flex; gap: .25rem; }
     .nav-tab {
-      padding: .45rem 1.1rem;
-      border-radius: 6px;
-      font-size: .85rem;
-      font-weight: 500;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--muted);
-      transition: all .15s;
+      padding: .45rem 1.1rem; border-radius: 6px; font-size: .85rem; font-weight: 500;
+      cursor: pointer; border: none; background: transparent; color: var(--muted); transition: all .15s;
     }
-    .nav-tab:hover  { color: var(--text); background: var(--surface2); }
+    .nav-tab:hover { color: var(--text); background: var(--surface2); }
     .nav-tab.active { color: var(--accent); background: var(--surface2); }
 
-    /* ── PAGES ── */
+    /* PAGES */
     .page { display: none; padding: 2rem; max-width: 1200px; margin: 0 auto; }
     .page.active { display: block; }
+    .section-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1.25rem; }
+    .section-title span { color: var(--accent); }
 
-    /* ── SECTION TITLE ── */
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 1.25rem;
-      color: var(--text);
-    }
-    .section-title span {
-      color: var(--accent);
-    }
-
-    /* ── SEARCH BAR ── */
-    .search-row {
-      display: flex;
-      gap: .75rem;
-      margin-bottom: 2rem;
-    }
+    /* SEARCH */
+    .search-row { display: flex; gap: .75rem; margin-bottom: 2rem; }
     .search-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .7rem 1rem;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: .9rem;
-      outline: none;
-      transition: border .15s;
+      flex: 1; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: .7rem 1rem; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; transition: border .15s;
     }
     .search-input:focus { border-color: var(--accent); }
     .search-input::placeholder { color: var(--muted); }
     .btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: .7rem 1.4rem;
-      font-size: .9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity .15s;
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: .7rem 1.4rem; font-size: .9rem; font-weight: 600; cursor: pointer; transition: opacity .15s;
     }
     .btn:hover { opacity: .85; }
-    .btn-ghost {
-      background: var(--surface2);
-      color: var(--text);
-    }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
 
-    /* ── WATCHLIST GRID ── */
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
+    /* WATCHLIST CARDS */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.1rem 1.25rem;
-      cursor: pointer;
-      transition: border-color .15s, transform .1s;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.1rem 1.25rem; cursor: pointer; transition: border-color .15s, transform .1s; position: relative;
     }
     .card:hover { border-color: var(--accent); transform: translateY(-1px); }
-    .card-ticker {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: .8rem;
-      color: var(--accent);
-      font-weight: 500;
-      margin-bottom: .2rem;
-    }
-    .card-name {
-      font-size: .85rem;
-      color: var(--muted);
-      margin-bottom: .75rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .card-price {
-      font-size: 1.35rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      margin-bottom: .3rem;
-    }
-    .card-change {
-      font-size: .82rem;
-      font-weight: 500;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .up   { color: var(--up); }
-    .down { color: var(--down); }
+    .card.active-card { border-color: var(--accent); }
+    .card-ticker { font-family: 'JetBrains Mono', monospace; font-size: .8rem; color: var(--accent); font-weight: 500; margin-bottom: .2rem; }
+    .card-name { font-size: .82rem; color: var(--muted); margin-bottom: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-price { font-size: 1.3rem; font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-bottom: .3rem; }
+    .card-change { font-size: .82rem; font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+    .up { color: var(--up); } .down { color: var(--down); }
     .card-remove {
-      position: absolute;
-      top: .6rem;
-      right: .7rem;
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 1rem;
-      cursor: pointer;
-      opacity: 0;
-      transition: opacity .15s;
+      position: absolute; top: .6rem; right: .7rem; background: none; border: none;
+      color: var(--muted); font-size: 1rem; cursor: pointer; opacity: 0; transition: opacity .15s;
     }
     .card:hover .card-remove { opacity: 1; }
-
-    /* loading skeleton */
     .skeleton {
       background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-      border-radius: 4px;
-      height: 1em;
+      background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 4px; height: 1em;
     }
     @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-    /* ── CHART AREA ── */
-    .chart-container {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+    /* TRADINGVIEW CHART */
+    .tv-container {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; margin-bottom: 2rem;
     }
-    .chart-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-      flex-wrap: wrap;
-      gap: .75rem;
+    .tv-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: .75rem;
     }
-    .chart-asset-name { font-size: 1rem; font-weight: 600; }
-    .chart-asset-price {
-      font-size: 1.6rem;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-      margin-top: .15rem;
-    }
-    .chart-periods {
-      display: flex;
-      gap: .4rem;
-    }
+    .tv-title { font-size: 1rem; font-weight: 600; }
+    .tv-periods { display: flex; gap: .4rem; }
     .period-btn {
-      padding: .3rem .7rem;
-      border-radius: 6px;
-      font-size: .78rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--muted);
-      transition: all .15s;
+      padding: .3rem .7rem; border-radius: 6px; font-size: .78rem; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--muted); transition: all .15s;
     }
-    .period-btn:hover  { color: var(--text); border-color: var(--muted); }
+    .period-btn:hover { color: var(--text); border-color: var(--muted); }
     .period-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(249,115,22,.08); }
-    #mainChart {
-      width: 100%;
-      height: 240px;
-      display: block;
-    }
+    #tvWidget { width: 100%; height: 400px; }
 
-    /* ── SIMULATOR ── */
-    .sim-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    @media(max-width:700px){ .sim-grid{ grid-template-columns:1fr; } }
+    /* MARKET OVERVIEW STRIP */
+    .tv-strip { border-radius: 12px; overflow: hidden; margin-bottom: 2rem; }
 
-    .sim-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-    }
-    .sim-panel h3 {
-      font-size: .9rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: 1.25rem;
-    }
-    .form-group { margin-bottom: 1.1rem; }
-    .form-label {
-      display: block;
-      font-size: .8rem;
-      color: var(--muted);
-      margin-bottom: .4rem;
-    }
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: .75rem; }
+    .empty-state p { font-size: .9rem; }
+
+    /* SIMULATOR */
+    .sim-layout { display: grid; grid-template-columns: 340px 1fr; gap: 1.5rem; }
+    @media(max-width: 800px) { .sim-layout { grid-template-columns: 1fr; } }
+    .sim-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+    .sim-panel h3 { font-size: .85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1.25rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: .4rem; }
     .form-input, .form-select {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: .65rem .9rem;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: .9rem;
-      outline: none;
-      transition: border .15s;
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: .65rem .9rem; color: var(--text);
+      font-family: 'Inter', sans-serif; font-size: .9rem; outline: none; transition: border .15s;
     }
     .form-input:focus, .form-select:focus { border-color: var(--accent); }
     .form-select option { background: var(--surface2); }
+    .sym-row { display: flex; gap: .5rem; }
+    .sym-row .form-input { flex: 1; }
+    .sym-badge {
+      display: inline-block; background: rgba(249,115,22,.15); color: var(--accent);
+      border-radius: 6px; padding: .2rem .6rem; font-size: .78rem; font-family: 'JetBrains Mono', monospace;
+      margin-top: .4rem;
+    }
+    .sim-info { font-size: .78rem; color: var(--muted); margin-top: .4rem; }
 
-    .scenarios {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: .75rem;
-      margin-top: 1.5rem;
-    }
-    .scenario-card {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-      text-align: center;
-    }
-    .scenario-card.pessimiste { border-color: var(--down); }
-    .scenario-card.neutre     { border-color: var(--border); }
-    .scenario-card.optimiste  { border-color: var(--up); }
-    .scenario-label {
-      font-size: .72rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      margin-bottom: .5rem;
-    }
-    .scenario-card.pessimiste .scenario-label { color: var(--down); }
-    .scenario-card.neutre     .scenario-label { color: var(--muted); }
-    .scenario-card.optimiste  .scenario-label { color: var(--up); }
-    .scenario-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: .2rem;
-    }
-    .scenario-rate {
-      font-size: .75rem;
-      color: var(--muted);
-    }
+    .scenarios { display: grid; grid-template-columns: repeat(3,1fr); gap: .75rem; margin-bottom: 1.25rem; }
+    .scenario-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; }
+    .scenario-card.pess { border-color: var(--down); }
+    .scenario-card.neu  { border-top: 2px solid var(--accent); }
+    .scenario-card.opt  { border-color: var(--up); }
+    .sc-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: .4rem; }
+    .scenario-card.pess .sc-label { color: var(--down); }
+    .scenario-card.neu  .sc-label { color: var(--accent); }
+    .scenario-card.opt  .sc-label { color: var(--up); }
+    .sc-value { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; margin-bottom: .25rem; }
+    .sc-rate  { font-size: .72rem; color: var(--muted); }
+    .sc-gain  { font-size: .72rem; margin-top: .2rem; }
 
-    #simChart {
-      width: 100%;
-      height: 220px;
-      display: block;
-      margin-top: 1rem;
-    }
+    #simChart { width: 100%; height: 260px; display: block; margin-top: .5rem; }
 
-    /* ── EMPTY STATE ── */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted);
+    .status-bar {
+      background: rgba(249,115,22,.08); border: 1px solid rgba(249,115,22,.2);
+      border-radius: 8px; padding: .6rem 1rem; font-size: .82rem; color: var(--accent);
+      margin-bottom: 1rem; display: none;
     }
-    .empty-state .icon { font-size: 2.5rem; margin-bottom: .75rem; }
-    .empty-state p { font-size: .9rem; }
   </style>
 </head>
 <body>
@@ -336,145 +159,208 @@
 <nav>
   <span class="nav-logo">S&SM</span>
   <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('markets')">Marchés</button>
-    <button class="nav-tab"        onclick="showPage('simulator')">Simulateur</button>
+    <button class="nav-tab active" onclick="showPage('markets',this)">Marchés</button>
+    <button class="nav-tab"        onclick="showPage('simulator',this)">Simulateur</button>
   </div>
 </nav>
 
-<!-- ══════════════ PAGE MARCHÉS ══════════════ -->
+<!-- ══════════ MARCHÉS ══════════ -->
 <div class="page active" id="page-markets">
 
+  <!-- bande aperçu marché -->
+  <div class="tv-strip">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+        "symbols": [
+          {"proName":"FOREXCOM:SPXUSD","title":"S&P 500"},
+          {"proName":"NASDAQ:QQQ","title":"Nasdaq QQQ"},
+          {"description":"CAC 40","proName":"EURONEXT:PX1"},
+          {"description":"BTC/EUR","proName":"COINBASE:BTCEUR"},
+          {"description":"ETH/EUR","proName":"COINBASE:ETHEUR"},
+          {"description":"Or","proName":"TVC:GOLD"},
+          {"description":"EUR/USD","proName":"FX:EURUSD"}
+        ],
+        "showSymbolLogo": true,
+        "isTransparent": true,
+        "displayMode": "adaptive",
+        "colorTheme": "dark",
+        "locale": "fr"
+      }
+      </script>
+    </div>
+  </div>
+
   <div class="search-row">
-    <input class="search-input" id="searchInput" placeholder="Rechercher un actif : AAPL, BTC-EUR, IWDA.AS …" />
-    <button class="btn" onclick="addAsset()">Ajouter</button>
+    <input class="search-input" id="searchInput" placeholder="Ajouter un actif : AAPL, MC.PA, BTC-USD, IWDA.AS …" />
+    <button class="btn" id="addBtn" onclick="addAsset()">Ajouter</button>
   </div>
 
   <p class="section-title">Ma <span>watchlist</span></p>
   <div class="cards-grid" id="watchlistGrid"></div>
-
-  <div class="chart-container" id="chartArea" style="display:none">
-    <div class="chart-header">
-      <div>
-        <div class="chart-asset-name" id="chartName">—</div>
-        <div class="chart-asset-price" id="chartPrice">—</div>
-        <div class="card-change" id="chartChange">—</div>
-      </div>
-      <div class="chart-periods">
-        <button class="period-btn active" onclick="setPeriod('5d',this)">5J</button>
-        <button class="period-btn"        onclick="setPeriod('1mo',this)">1M</button>
-        <button class="period-btn"        onclick="setPeriod('6mo',this)">6M</button>
-        <button class="period-btn"        onclick="setPeriod('1y',this)">1A</button>
-        <button class="period-btn"        onclick="setPeriod('5y',this)">5A</button>
-      </div>
-    </div>
-    <canvas id="mainChart"></canvas>
-  </div>
-
-  <div class="empty-state" id="emptyState">
+  <div class="empty-state" id="emptyState" style="display:none">
     <div class="icon">📈</div>
     <p>Ajoute un actif pour commencer à suivre les marchés.</p>
   </div>
+
+  <!-- Graphique TradingView -->
+  <div class="tv-container" id="chartArea" style="display:none">
+    <div class="tv-header">
+      <div class="tv-title" id="chartTitle">—</div>
+      <div class="tv-periods">
+        <button class="period-btn active" onclick="setTVPeriod('1D',this)">1J</button>
+        <button class="period-btn" onclick="setTVPeriod('1W',this)">1S</button>
+        <button class="period-btn" onclick="setTVPeriod('1M',this)">1M</button>
+        <button class="period-btn" onclick="setTVPeriod('3M',this)">3M</button>
+        <button class="period-btn" onclick="setTVPeriod('12M',this)">1A</button>
+        <button class="period-btn" onclick="setTVPeriod('60M',this)">5A</button>
+      </div>
+    </div>
+    <div id="tvWidget"></div>
+  </div>
+
 </div>
 
-<!-- ══════════════ PAGE SIMULATEUR ══════════════ -->
+<!-- ══════════ SIMULATEUR ══════════ -->
 <div class="page" id="page-simulator">
   <p class="section-title">Simulation de <span>portefeuille</span></p>
 
-  <div class="sim-grid">
+  <div class="status-bar" id="statusBar">⏳ Chargement des données historiques…</div>
+
+  <div class="sim-layout">
+    <!-- Paramètres -->
     <div class="sim-panel">
       <h3>Paramètres</h3>
 
       <div class="form-group">
+        <label class="form-label">Symbole de l'actif</label>
+        <div class="sym-row">
+          <input class="form-input" id="simSymbol" placeholder="ex: AAPL, IWDA.AS, BTC-USD" />
+          <button class="btn" id="fetchBtn" onclick="fetchAndSim()" style="white-space:nowrap">Charger</button>
+        </div>
+        <div id="symBadge"></div>
+        <div class="sim-info">Le rendement annuel moyen sera calculé depuis l'historique réel.</div>
+      </div>
+
+      <div class="form-group">
         <label class="form-label">Montant initial (€)</label>
-        <input class="form-input" id="simAmount" type="number" value="1000" min="1"/>
+        <input class="form-input" id="simAmount" type="number" value="1000" min="1" />
       </div>
       <div class="form-group">
         <label class="form-label">Versement mensuel (€)</label>
-        <input class="form-input" id="simMonthly" type="number" value="0" min="0"/>
+        <input class="form-input" id="simMonthly" type="number" value="100" min="0" />
       </div>
       <div class="form-group">
         <label class="form-label">Durée (années)</label>
-        <input class="form-input" id="simYears" type="number" value="10" min="1" max="50"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Type d'actif</label>
-        <select class="form-select" id="simAssetType" onchange="updateRates()">
-          <option value="etf_world">ETF World (ex. MSCI World)</option>
-          <option value="etf_sp500">ETF S&amp;P 500</option>
-          <option value="bond">Obligations</option>
-          <option value="crypto">Crypto (Bitcoin)</option>
-          <option value="custom">Taux personnalisés</option>
-        </select>
-      </div>
-      <div id="customRates" style="display:none">
-        <div class="form-group">
-          <label class="form-label">Taux pessimiste (%/an)</label>
-          <input class="form-input" id="ratePess" type="number" value="2"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Taux neutre (%/an)</label>
-          <input class="form-input" id="rateNeu" type="number" value="6"/>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Taux optimiste (%/an)</label>
-          <input class="form-input" id="rateOpt" type="number" value="10"/>
-        </div>
+        <input class="form-input" id="simYears" type="number" value="10" min="1" max="50" />
       </div>
 
       <button class="btn" style="width:100%;margin-top:.5rem" onclick="runSim()">Simuler</button>
     </div>
 
+    <!-- Résultats -->
     <div class="sim-panel">
       <h3>Résultats</h3>
-      <div class="scenarios" id="scenariosOutput">
-        <div class="scenario-card pessimiste">
-          <div class="scenario-label">Pessimiste</div>
-          <div class="scenario-value" id="resPess">—</div>
-          <div class="scenario-rate" id="ratePessLabel">—</div>
+
+      <div class="scenarios">
+        <div class="scenario-card pess">
+          <div class="sc-label">Pessimiste</div>
+          <div class="sc-value" id="resPess">—</div>
+          <div class="sc-rate" id="ratePessLbl">—</div>
+          <div class="sc-gain down" id="gainPess"></div>
         </div>
-        <div class="scenario-card neutre">
-          <div class="scenario-label">Neutre</div>
-          <div class="scenario-value" id="resNeu">—</div>
-          <div class="scenario-rate" id="rateNeuLabel">—</div>
+        <div class="scenario-card neu">
+          <div class="sc-label">Neutre</div>
+          <div class="sc-value" id="resNeu">—</div>
+          <div class="sc-rate" id="rateNeuLbl">—</div>
+          <div class="sc-gain" id="gainNeu" style="color:var(--accent)"></div>
         </div>
-        <div class="scenario-card optimiste">
-          <div class="scenario-label">Optimiste</div>
-          <div class="scenario-value" id="resOpt">—</div>
-          <div class="scenario-rate" id="rateOptLabel">—</div>
+        <div class="scenario-card opt">
+          <div class="sc-label">Optimiste</div>
+          <div class="sc-value" id="resOpt">—</div>
+          <div class="sc-rate" id="rateOptLbl">—</div>
+          <div class="sc-gain up" id="gainOpt"></div>
         </div>
       </div>
+
       <canvas id="simChart"></canvas>
     </div>
   </div>
 </div>
 
-<!-- ══════════════ SCRIPTS ══════════════ -->
+<!-- scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-/* ───────────────────── helpers ───────────────────── */
-const PROXY = "https://query1.finance.yahoo.com/v8/finance/chart/";
+const AV_KEY = 'X8FTCGJYAM60D1FC';
+let watchlist = JSON.parse(localStorage.getItem('ssm_watchlist') || '["AAPL","IWDA.AS","BTC-USD","MC.PA"]');
+let currentSymbol = null;
+let currentPeriod = '1D';
+let tvWidgetInstance = null;
+let simChartInstance = null;
+let cachedRate = null; // moyenne historique récupérée via AV
 
-async function fetchQuote(symbol) {
-  const url = `https://corsproxy.io/?${encodeURIComponent(PROXY + symbol + "?interval=1d&range=1d")}`;
-  const r = await fetch(url);
-  const d = await r.json();
-  const meta = d.chart.result[0].meta;
-  return {
-    price:  meta.regularMarketPrice,
-    prev:   meta.chartPreviousClose,
-    name:   meta.shortName || symbol,
-    symbol: symbol.toUpperCase()
-  };
+/* ── navigation ── */
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
 }
 
-async function fetchHistory(symbol, period) {
-  const url = `https://corsproxy.io/?${encodeURIComponent(PROXY + symbol + "?interval=1d&range=" + period)}`;
+/* ── watchlist ── */
+function saveWatchlist() { localStorage.setItem('ssm_watchlist', JSON.stringify(watchlist)); }
+
+function addAsset() {
+  const input = document.getElementById('searchInput');
+  const sym = input.value.trim().toUpperCase();
+  if (!sym) return;
+  if (watchlist.includes(sym)) { input.value = ''; return; }
+  watchlist.push(sym);
+  saveWatchlist();
+  input.value = '';
+  renderWatchlist();
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') addAsset(); });
+
+function removeAsset(sym) {
+  watchlist = watchlist.filter(s => s !== sym);
+  saveWatchlist();
+  if (currentSymbol === sym) {
+    document.getElementById('chartArea').style.display = 'none';
+    currentSymbol = null;
+  }
+  renderWatchlist();
+}
+
+/* convert Yahoo-style symbol to TradingView symbol */
+function toTV(sym) {
+  // crypto
+  if (sym.endsWith('-USD')) return 'COINBASE:' + sym.replace('-','');
+  if (sym.endsWith('-EUR')) return 'COINBASE:' + sym.replace('-','');
+  // Paris
+  if (sym.endsWith('.PA')) return 'EURONEXT:' + sym.replace('.PA','');
+  // Amsterdam
+  if (sym.endsWith('.AS')) return 'EURONEXT:' + sym.replace('.AS','');
+  // London
+  if (sym.endsWith('.L'))  return 'LSE:' + sym.replace('.L','');
+  // default NASDAQ/NYSE
+  return sym;
+}
+
+/* fetch quote from Alpha Vantage */
+async function fetchQuote(sym) {
+  const url = `https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${sym}&apikey=${AV_KEY}`;
   const r = await fetch(url);
   const d = await r.json();
-  const res = d.chart.result[0];
-  const ts    = res.timestamps;
-  const close = res.indicators.quote[0].close;
-  return ts.map((t,i) => ({ x: new Date(t*1000), y: close[i] })).filter(p => p.y != null);
+  const q = d['Global Quote'];
+  if (!q || !q['05. price']) return null;
+  return {
+    price:  parseFloat(q['05. price']),
+    change: parseFloat(q['10. change percent'].replace('%','')),
+    symbol: sym
+  };
 }
 
 function fmt(n) {
@@ -482,207 +368,201 @@ function fmt(n) {
   return n.toLocaleString('fr-FR', {minimumFractionDigits:2, maximumFractionDigits:4});
 }
 
-/* ───────────────────── state ───────────────────── */
-let watchlist = JSON.parse(localStorage.getItem('watchlist') || '[]');
-let mainChartInstance = null;
-let simChartInstance  = null;
-let currentSymbol = null;
-let currentPeriod = '5d';
-
-/* ───────────────────── navigation ───────────────────── */
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  event.target.classList.add('active');
-}
-
-/* ───────────────────── watchlist ───────────────────── */
-async function addAsset() {
-  const input = document.getElementById('searchInput');
-  const sym = input.value.trim().toUpperCase();
-  if (!sym || watchlist.includes(sym)) { input.value=''; return; }
-  watchlist.push(sym);
-  localStorage.setItem('watchlist', JSON.stringify(watchlist));
-  input.value = '';
-  renderCards();
-}
-
-document.getElementById('searchInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addAsset();
-});
-
-function removeAsset(sym) {
-  watchlist = watchlist.filter(s => s !== sym);
-  localStorage.setItem('watchlist', JSON.stringify(watchlist));
-  if (currentSymbol === sym) {
-    document.getElementById('chartArea').style.display = 'none';
-    currentSymbol = null;
-  }
-  renderCards();
-}
-
-function renderCards() {
+function renderWatchlist() {
   const grid = document.getElementById('watchlistGrid');
   const empty = document.getElementById('emptyState');
   grid.innerHTML = '';
-  if (watchlist.length === 0) { empty.style.display='block'; return; }
+  if (watchlist.length === 0) { empty.style.display = 'block'; return; }
   empty.style.display = 'none';
 
   watchlist.forEach(sym => {
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card' + (sym === currentSymbol ? ' active-card' : '');
+    card.id = 'card-' + sym;
     card.innerHTML = `
       <button class="card-remove" onclick="event.stopPropagation();removeAsset('${sym}')">✕</button>
       <div class="card-ticker">${sym}</div>
-      <div class="card-name skeleton" style="width:70%;margin-bottom:.75rem">&nbsp;</div>
-      <div class="card-price skeleton" style="width:50%">&nbsp;</div>
-      <div class="card-change" style="margin-top:.3rem">—</div>`;
+      <div class="card-name skeleton" style="width:70%;height:.8em;margin-bottom:.75rem">&nbsp;</div>
+      <div class="card-price" style="color:var(--muted)">…</div>
+      <div class="card-change">—</div>`;
     card.onclick = () => loadChart(sym);
     grid.appendChild(card);
 
     fetchQuote(sym).then(q => {
-      const change = ((q.price - q.prev) / q.prev * 100);
-      const dir    = change >= 0 ? 'up' : 'down';
-      card.querySelector('.card-name').className  = 'card-name';
-      card.querySelector('.card-name').textContent = q.name;
-      card.querySelector('.card-price').className = 'card-price';
-      card.querySelector('.card-price').textContent = fmt(q.price) + ' €';
+      if (!q) {
+        card.querySelector('.card-name').className = 'card-name';
+        card.querySelector('.card-name').textContent = 'Données indisponibles';
+        card.querySelector('.card-price').textContent = '—';
+        return;
+      }
+      const dir = q.change >= 0 ? 'up' : 'down';
+      card.querySelector('.card-name').className = 'card-name';
+      card.querySelector('.card-name').textContent = sym;
+      card.querySelector('.card-price').textContent = fmt(q.price);
       card.querySelector('.card-change').className = `card-change ${dir}`;
-      card.querySelector('.card-change').textContent = `${change>=0?'+':''}${change.toFixed(2)}%`;
+      card.querySelector('.card-change').textContent = `${q.change >= 0 ? '+' : ''}${q.change.toFixed(2)}%`;
     }).catch(() => {
-      card.querySelector('.card-name').className  = 'card-name';
-      card.querySelector('.card-name').textContent = 'Erreur de chargement';
+      card.querySelector('.card-name').className = 'card-name';
+      card.querySelector('.card-name').textContent = 'Erreur';
     });
   });
 }
 
-/* ───────────────────── chart ───────────────────── */
-async function loadChart(sym) {
+/* ── TradingView chart ── */
+function loadChart(sym) {
   currentSymbol = sym;
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('active-card'));
+  const card = document.getElementById('card-' + sym);
+  if (card) card.classList.add('active-card');
+
+  const tvSym = toTV(sym);
+  document.getElementById('chartTitle').textContent = sym;
   document.getElementById('chartArea').style.display = 'block';
-  document.getElementById('chartName').textContent  = sym;
-  document.getElementById('chartPrice').textContent = '…';
-  document.getElementById('chartChange').textContent = '';
 
-  const [quote, history] = await Promise.all([
-    fetchQuote(sym),
-    fetchHistory(sym, currentPeriod)
-  ]);
+  document.getElementById('tvWidget').innerHTML = '';
+  const container = document.createElement('div');
+  container.className = 'tradingview-widget-container';
+  container.style.height = '400px';
+  const widgetDiv = document.createElement('div');
+  widgetDiv.id = 'tv_chart_' + Date.now();
+  widgetDiv.style.height = '400px';
+  container.appendChild(widgetDiv);
+  document.getElementById('tvWidget').appendChild(container);
 
-  const change = ((quote.price - quote.prev) / quote.prev * 100);
-  const dir    = change >= 0 ? 'up' : 'down';
-  document.getElementById('chartName').textContent   = quote.name;
-  document.getElementById('chartPrice').textContent  = fmt(quote.price) + ' €';
-  document.getElementById('chartChange').className   = `card-change ${dir}`;
-  document.getElementById('chartChange').textContent = `${change>=0?'+':''}${change.toFixed(2)}% aujourd'hui`;
-
-  const color = dir === 'up' ? '#22c55e' : '#ef4444';
-  drawMainChart(history, color);
+  const script = document.createElement('script');
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async = true;
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: tvSym,
+    interval: currentPeriod === '1D' ? 'D' : currentPeriod === '1W' ? 'W' : 'M',
+    range: currentPeriod,
+    timezone: 'Europe/Paris',
+    theme: 'dark',
+    style: '1',
+    locale: 'fr',
+    backgroundColor: '#1a1a1a',
+    gridColor: 'rgba(255,255,255,0.03)',
+    hide_top_toolbar: false,
+    hide_legend: false,
+    save_image: false,
+    container_id: widgetDiv.id
+  });
+  container.appendChild(script);
   document.getElementById('chartArea').scrollIntoView({behavior:'smooth', block:'nearest'});
 }
 
-function drawMainChart(data, color) {
-  const ctx = document.getElementById('mainChart').getContext('2d');
-  if (mainChartInstance) mainChartInstance.destroy();
-  mainChartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      datasets: [{
-        data: data,
-        borderColor: color,
-        borderWidth: 2,
-        pointRadius: 0,
-        fill: true,
-        backgroundColor: ctx => {
-          const g = ctx.chart.ctx.createLinearGradient(0,0,0,220);
-          g.addColorStop(0, color + '33');
-          g.addColorStop(1, color + '00');
-          return g;
-        },
-        tension: .3
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 400 },
-      plugins: { legend: { display:false }, tooltip: {
-        callbacks: { label: c => ' ' + fmt(c.parsed.y) + ' €' }
-      }},
-      scales: {
-        x: { type:'time', time:{ tooltipFormat:'dd MMM yyyy' },
-             grid:{ color:'#1f1f1f' }, ticks:{ color:'#888', maxTicksLimit:6, font:{size:11} } },
-        y: { grid:{ color:'#1f1f1f' }, ticks:{ color:'#888', font:{size:11},
-             callback: v => fmt(v) } }
-      }
-    }
-  });
-}
-
-function setPeriod(p, btn) {
+function setTVPeriod(p, btn) {
   currentPeriod = p;
   document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   if (currentSymbol) loadChart(currentSymbol);
 }
 
-/* ───────────────────── simulator ───────────────────── */
-const RATES = {
-  etf_world:  { pess:3,  neu:7,  opt:12 },
-  etf_sp500:  { pess:4,  neu:8,  opt:14 },
-  bond:        { pess:1,  neu:3,  opt:5  },
-  crypto:      { pess:-20, neu:15, opt:50 },
-};
+/* ══════════ SIMULATEUR ══════════ */
 
-function updateRates() {
-  const t = document.getElementById('simAssetType').value;
-  document.getElementById('customRates').style.display = t==='custom' ? 'block' : 'none';
+async function fetchAndSim() {
+  const sym = document.getElementById('simSymbol').value.trim().toUpperCase();
+  if (!sym) return;
+
+  const statusBar = document.getElementById('statusBar');
+  const fetchBtn  = document.getElementById('fetchBtn');
+  statusBar.style.display = 'block';
+  statusBar.textContent   = '⏳ Récupération de l\'historique réel de ' + sym + '…';
+  fetchBtn.disabled = true;
+
+  try {
+    // Try monthly time series (20 years of data)
+    const url = `https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY_ADJUSTED&symbol=${sym}&apikey=${AV_KEY}`;
+    const r = await fetch(url);
+    const d = await r.json();
+
+    if (d['Note'] || d['Information']) {
+      statusBar.textContent = '⚠️ Limite API atteinte (25 req/jour). Réessaie demain ou utilise les taux manuels.';
+      cachedRate = null;
+      document.getElementById('symBadge').innerHTML = '';
+      fetchBtn.disabled = false;
+      return;
+    }
+
+    const series = d['Monthly Adjusted Time Series'];
+    if (!series) {
+      statusBar.textContent = '❌ Symbole introuvable. Vérifie le ticker (ex: AAPL, MC.PA, BTC-USD).';
+      cachedRate = null;
+      document.getElementById('symBadge').innerHTML = '';
+      fetchBtn.disabled = false;
+      return;
+    }
+
+    // calc CAGR from oldest to newest
+    const dates = Object.keys(series).sort();
+    const first = parseFloat(series[dates[0]]['5. adjusted close']);
+    const last  = parseFloat(series[dates[dates.length-1]]['5. adjusted close']);
+    const years = dates.length / 12;
+    const cagr  = (Math.pow(last / first, 1 / years) - 1) * 100;
+
+    cachedRate = parseFloat(cagr.toFixed(2));
+
+    document.getElementById('symBadge').innerHTML =
+      `<span class="sym-badge">${sym}</span> <span style="font-size:.78rem;color:var(--muted)">TCAC réel : ${cachedRate > 0 ? '+' : ''}${cachedRate.toFixed(2)}%/an sur ${Math.round(years)} ans</span>`;
+
+    statusBar.textContent = `✅ Données chargées — ${sym} : rendement annuel moyen de ${cachedRate.toFixed(2)}%`;
+    statusBar.style.background = 'rgba(34,197,94,.08)';
+    statusBar.style.borderColor = 'rgba(34,197,94,.25)';
+    statusBar.style.color = 'var(--up)';
+
+    runSim();
+  } catch(e) {
+    statusBar.textContent = '❌ Erreur réseau. Vérifie ta connexion.';
+  }
+  fetchBtn.disabled = false;
 }
 
 function compound(initial, monthly, years, rate) {
   const r = rate / 100 / 12;
   const n = years * 12;
-  let val = initial;
-  for (let i = 0; i < n; i++) {
-    val = val * (1 + r) + monthly;
+  let val = initial * Math.pow(1 + r, n);
+  if (r === 0) {
+    val = initial + monthly * n;
+  } else {
+    val += monthly * (Math.pow(1 + r, n) - 1) / r;
   }
   return val;
 }
 
 function runSim() {
-  const amount  = parseFloat(document.getElementById('simAmount').value) || 0;
+  const amount  = parseFloat(document.getElementById('simAmount').value)  || 1000;
   const monthly = parseFloat(document.getElementById('simMonthly').value) || 0;
-  const years   = parseInt(document.getElementById('simYears').value) || 10;
-  const type    = document.getElementById('simAssetType').value;
+  const years   = parseInt(document.getElementById('simYears').value)     || 10;
 
-  let rates;
-  if (type === 'custom') {
-    rates = {
-      pess: parseFloat(document.getElementById('ratePess').value),
-      neu:  parseFloat(document.getElementById('rateNeu').value),
-      opt:  parseFloat(document.getElementById('rateOpt').value),
-    };
-  } else {
-    rates = RATES[type];
-  }
+  let base = cachedRate !== null ? cachedRate : 7; // fallback 7%
+  const rates = {
+    pess: parseFloat((base * 0.4).toFixed(2)),
+    neu:  parseFloat((base).toFixed(2)),
+    opt:  parseFloat((base * 1.6).toFixed(2))
+  };
 
+  const invested = amount + monthly * years * 12;
   const vPess = compound(amount, monthly, years, rates.pess);
   const vNeu  = compound(amount, monthly, years, rates.neu);
   const vOpt  = compound(amount, monthly, years, rates.opt);
 
-  document.getElementById('resPess').textContent = fmt(vPess) + ' €';
-  document.getElementById('resNeu').textContent  = fmt(vNeu)  + ' €';
-  document.getElementById('resOpt').textContent  = fmt(vOpt)  + ' €';
-  document.getElementById('ratePessLabel').textContent = rates.pess + '%/an';
-  document.getElementById('rateNeuLabel').textContent  = rates.neu  + '%/an';
-  document.getElementById('rateOptLabel').textContent  = rates.opt  + '%/an';
+  function setCard(prefix, val, rate) {
+    document.getElementById('res' + prefix).textContent = fmt(val) + ' €';
+    document.getElementById('rate' + prefix + 'Lbl').textContent = rate + '%/an';
+    const gain = val - invested;
+    document.getElementById('gain' + prefix).textContent = (gain >= 0 ? '+' : '') + fmt(gain) + ' €';
+  }
+  setCard('Pess', vPess, rates.pess);
+  setCard('Neu',  vNeu,  rates.neu);
+  setCard('Opt',  vOpt,  rates.opt);
 
-  // build year-by-year data
-  const labels = Array.from({length: years+1}, (_,i) => 'An ' + i);
-  const dPess  = Array.from({length: years+1}, (_,i) => compound(amount, monthly, i, rates.pess));
-  const dNeu   = Array.from({length: years+1}, (_,i) => compound(amount, monthly, i, rates.neu));
-  const dOpt   = Array.from({length: years+1}, (_,i) => compound(amount, monthly, i, rates.opt));
+  // chart
+  const labels = Array.from({length: years + 1}, (_, i) => 'An ' + i);
+  const dPess  = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.pess)));
+  const dNeu   = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.neu)));
+  const dOpt   = Array.from({length: years + 1}, (_, i) => Math.round(compound(amount, monthly, i, rates.opt)));
+  const dInv   = Array.from({length: years + 1}, (_, i) => Math.round(amount + monthly * i * 12));
 
   const ctx = document.getElementById('simChart').getContext('2d');
   if (simChartInstance) simChartInstance.destroy();
@@ -691,32 +571,28 @@ function runSim() {
     data: {
       labels,
       datasets: [
-        { label:'Pessimiste', data:dPess, borderColor:'#ef4444', borderWidth:1.5, pointRadius:0, tension:.3, fill:false },
-        { label:'Neutre',     data:dNeu,  borderColor:'#888',    borderWidth:1.5, pointRadius:0, tension:.3, fill:false },
-        { label:'Optimiste',  data:dOpt,  borderColor:'#22c55e', borderWidth:1.5, pointRadius:0, tension:.3, fill:false },
+        { label:'Optimiste',  data:dOpt,  borderColor:'#22c55e', borderWidth:2, pointRadius:0, tension:.3, fill:false },
+        { label:'Neutre',     data:dNeu,  borderColor:'#f97316', borderWidth:2, pointRadius:0, tension:.3, fill:false },
+        { label:'Pessimiste', data:dPess, borderColor:'#ef4444', borderWidth:2, pointRadius:0, tension:.3, fill:false },
+        { label:'Investi',    data:dInv,  borderColor:'#555',    borderWidth:1, pointRadius:0, tension:.0, fill:false, borderDash:[4,4] },
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color:'#888', font:{size:11} } },
+      plugins: {
+        legend: { labels: { color:'#888', font:{size:11}, boxWidth:12 } },
         tooltip: { callbacks: { label: c => ' ' + c.dataset.label + ' : ' + fmt(c.parsed.y) + ' €' } }
       },
       scales: {
-        x: { grid:{color:'#1f1f1f'}, ticks:{color:'#888', font:{size:10}} },
-        y: { grid:{color:'#1f1f1f'}, ticks:{color:'#888', font:{size:10}, callback: v => fmt(v)+'€' } }
+        x: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#888', font:{size:10}} },
+        y: { grid:{color:'rgba(255,255,255,0.04)'}, ticks:{color:'#888', font:{size:10}, callback: v => v >= 1000 ? (v/1000).toFixed(0)+'k€' : v+'€' } }
       }
     }
   });
 }
 
-/* ───────────────────── init ───────────────────── */
-// pre-load default watchlist
-if (watchlist.length === 0) {
-  watchlist = ['AAPL', 'IWDA.AS', 'BTC-EUR'];
-  localStorage.setItem('watchlist', JSON.stringify(watchlist));
-}
-renderCards();
-updateRates();
+/* ── init ── */
+renderWatchlist();
 runSim();
 </script>
 </body>
